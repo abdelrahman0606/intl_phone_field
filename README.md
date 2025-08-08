@@ -20,7 +20,7 @@ To use this package:
 ```yaml
 dependencies:
   intl_phone_field:
-    git: https://github.com/Abdo73873/intl_phone_field.git
+    git: https://github.com/abdelrahman0606/intl_phone_field.git
 ```
 
 ## How to Use
