@@ -1,3 +1,7 @@
+## [3.9.0] - Release
+
+- Update dev dependencies: `flutter_lints` to ^6.0.0, `test` to ^1.26.3.
+
 ## [3.2.0] - Release
 
 - Add `autofillHints` and disable posibility.

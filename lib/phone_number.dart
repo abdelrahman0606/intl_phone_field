@@ -26,12 +26,16 @@ class PhoneNumber {
       Country country = getCountry(completeNumber);
       String number;
       if (completeNumber.startsWith('+')) {
-        number = completeNumber.substring(1 + country.dialCode.length + country.regionCode.length);
+        number = completeNumber
+            .substring(1 + country.dialCode.length + country.regionCode.length);
       } else {
-        number = completeNumber.substring(country.dialCode.length + country.regionCode.length);
+        number = completeNumber
+            .substring(country.dialCode.length + country.regionCode.length);
       }
       return PhoneNumber(
-          countryISOCode: country.code, countryCode: country.dialCode + country.regionCode, number: number);
+          countryISOCode: country.code,
+          countryCode: country.dialCode + country.regionCode,
+          number: number);
     } on InvalidCharactersException {
       rethrow;
       // ignore: unused_catch_clause
@@ -67,13 +71,25 @@ class PhoneNumber {
       throw InvalidCharactersException();
     }
 
-    if (phoneNumber.startsWith('+')) {
-      return countries
-          .firstWhere((country) => phoneNumber.substring(1).startsWith(country.dialCode + country.regionCode));
+    final normalised =
+        phoneNumber.startsWith('+') ? phoneNumber.substring(1) : phoneNumber;
+
+    // Use longest-match so that e.g. '+1242...' picks Bahamas (+1242)
+    // over the US (+1), and '+201...' picks Egypt (+20) unambiguously.
+    Country? best;
+    for (final country in countries) {
+      final code = country.dialCode + country.regionCode;
+      if (normalised.startsWith(code) &&
+          (best == null ||
+              code.length > (best.dialCode + best.regionCode).length)) {
+        best = country;
+      }
     }
-    return countries.firstWhere((country) => phoneNumber.startsWith(country.dialCode + country.regionCode));
+    if (best != null) return best;
+    throw Exception('No matching country found for: $phoneNumber');
   }
 
   @override
-  String toString() => 'PhoneNumber(countryISOCode: $countryISOCode, countryCode: $countryCode, number: $number)';
+  String toString() =>
+      'PhoneNumber(countryISOCode: $countryISOCode, countryCode: $countryCode, number: $number)';
 }

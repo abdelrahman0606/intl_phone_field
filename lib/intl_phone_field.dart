@@ -311,10 +311,22 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
     number = widget.initialValue ?? '';
     if (widget.initialCountryCode == null && number.startsWith('+')) {
       number = number.substring(1);
-      // parse initial value
-      _selectedCountry = countries.firstWhere(
-          (country) => number.startsWith(country.fullCountryCode),
-          orElse: () => _countryList.first);
+      // Find the country with the longest matching full code (most specific match).
+
+      _selectedCountry = _countryList.fold<Country?>(
+            null,
+            (best, country) {
+              if (number.startsWith(country.fullCountryCode)) {
+                if (best == null ||
+                    country.fullCountryCode.length >
+                        best.fullCountryCode.length) {
+                  return country;
+                }
+              }
+              return best;
+            },
+          ) ??
+          _countryList.first;
 
       // remove country code from the initial number value
       number = number.replaceFirst(
