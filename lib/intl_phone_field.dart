@@ -113,6 +113,7 @@ class IntlPhoneField extends StatefulWidget {
   /// If non-null this property overrides the [decoration]'s
   /// [Decoration.enabled] property.
   final bool enabled;
+  final bool enableDropDown;
 
   /// The appearance of the keyboard.
   ///
@@ -266,6 +267,7 @@ class IntlPhoneField extends StatefulWidget {
     this.countries,
     this.onCountryChanged,
     this.onSaved,
+    this.enableDropDown = true,
     this.showDropdownIcon = true,
     this.dropdownDecoration = const BoxDecoration(),
     this.inputFormatters,
@@ -483,7 +485,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
         decoration: widget.dropdownDecoration,
         child: InkWell(
           borderRadius: widget.dropdownDecoration.borderRadius as BorderRadius?,
-          onTap: widget.enabled ? _changeCountry : null,
+          onTap: widget.enabled &&widget.enableDropDown? _changeCountry : null,
           child: Padding(
             padding: widget.flagsButtonPadding,
             child: Row(
@@ -508,7 +510,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                         )
                       : Text(
                           _selectedCountry.flag,
-                          style: const TextStyle(fontSize: 18),
+                          style:widget.dropdownTextStyle?? const TextStyle(fontSize: 18),
                         ),
                   const SizedBox(width: 8),
                 ],
